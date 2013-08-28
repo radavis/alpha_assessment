@@ -1,3 +1,5 @@
+require 'csv'
+
 class Team
   @@teams = []
   attr_accessor :name, :wins, :losses, :ties
@@ -31,6 +33,16 @@ class Team
 
   def to_s
     @name
+  end
+
+  def self.export(filename)
+    col_names = @@teams.first.keys
+    CSV.open(filename, 'w') do |file|
+      file << column_names
+      @@teams.each do |team|
+        file << team.values
+      end
+    end
   end
 end
 

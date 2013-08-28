@@ -49,4 +49,10 @@ teams.each_with_index do |team, i|
   puts "#{i+1} #{team.name}: #{team.wins}W, #{team.losses}L"
 end
 
-#
+# export league standings
+puts "Would you like to export league standings? (Y/N)\n> "
+if gets.chomp.upcase == 'Y'
+  puts "Path to export to?\n> "
+  Team.export(gets.chomp)
+  puts "Data exported successfully..."
+end
