@@ -2,19 +2,31 @@ class Game
   @@team_list = []
   attr_reader :team1, :team2, :score1, :score2
 
-  def initialize(team1, score1, team2, score2)
-    #if @@team_list.include?(team1)
-    @team1 = team1
-    @team2 = team2
+  def initialize(team_name1, score1, team_name2, score2)
+    @team1 = @@team_list.select { |team| team.name == team_name1 }.first
+    @team2 = @@team_list.select { |team| team.name == team_name2 }.first
+
+    if @team1.nil?
+      @team1 = Team.new(team_name1)
+      @@team_list << @team1
+    end
+
+    if @team2.nil?
+      @team2 = Team.new(team_name2)
+      @@team_list << @team2
+    end
+
     @score1 = score1
     @score2 = score2
 
     if @team1 == winner
       @team1.wins += 1
       @team2.losses += 1
+
     elsif @team2 == winner
       @team2.wins += 1
       @team1.losses += 1
+
     else  # tie condition
       @team1.ties += 1
       @team2.ties += 1
@@ -31,8 +43,12 @@ class Game
     end
   end
 
+  def self.standings
+    @@team_list.sort_by { |team| team.wins }.reverse
+  end
+
   def to_s
-    "#{winner} is the victor!"
+    "#{winner.name} is the victor!"
   end
 end
 
@@ -92,4 +108,15 @@ loop do
   break if response == 'N'
 end
 
-puts games
+# print victors
+puts ""
+games.each_with_index do |game, i|
+  puts "In game #{i+1}, #{game}"
+end
+
+# print league standings
+puts "\n*** League Standings ***"
+teams = Game.standings
+teams.each_with_index do |team, i|
+  puts "#{i+1} #{team.name}: #{team.wins}W, #{team.losses}L"
+end
